@@ -70,6 +70,30 @@
       v-model="showImportDialog"
       @import="handleImport"
     />
+    
+    <!-- 普通删除确认弹窗 -->
+    <ConfirmDialog
+      v-model="showDeleteConfirm"
+      title="确认删除"
+      :message="`确定要删除学生 ${deleteTarget?.name} 吗？删除后可以在回收站中恢复。`"
+      confirm-text="确定"
+      cancel-text="取消"
+      type="warning"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
+    />
+    
+    <!-- 永久删除确认弹窗 -->
+    <ConfirmDialog
+      v-model="showPermanentDeleteConfirm"
+      title="确认永久删除"
+      :message="`确定要永久删除学生 ${deleteTarget?.name} 吗？此操作不可恢复！`"
+      confirm-text="确定"
+      cancel-text="取消"
+      type="error"
+      @confirm="confirmPermanentDelete"
+      @cancel="cancelDelete"
+    />
   </div>
 </template>
 
@@ -84,6 +108,7 @@ import StudentCard from './StudentCard.vue'
 import StudentForm from './StudentForm.vue'
 import ImportModal from './ImportModal.vue'
 import { exportStudentTemplate, exportStudentList as exportList } from '@/utils/excel'
+import ConfirmDialog from '../common/ConfirmDialog.vue'
 
 const studentStore = useStudentStore()
 const classStore = useClassStore()
@@ -93,6 +118,11 @@ const showAddDialog = ref(false)
 const showImportDialog = ref(false)
 const editingStudent = ref<Student | null>(null)
 const searchKeyword = ref('')
+
+// 删除确认弹窗状态
+const showDeleteConfirm = ref(false)
+const showPermanentDeleteConfirm = ref(false)
+const deleteTarget = ref<Student | null>(null)
 
 // 计算属性
 const currentClassStudents = computed(() => studentStore.currentClassStudents)
@@ -131,20 +161,37 @@ function handleEdit(student: Student) {
 
 // 删除学生
 function handleDelete(student: Student) {
-  ElMessageBox.confirm(
-    `确定要删除学生 ${student.name} 吗？删除后可以在回收站中恢复。`,
-    '确认删除',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }
-  ).then(() => {
-    studentStore.deleteStudent(student.id)
+  deleteTarget.value = student
+  showDeleteConfirm.value = true
+}
+
+// 永久删除学生
+function handlePermanentDelete(student: Student) {
+  deleteTarget.value = student
+  showPermanentDeleteConfirm.value = true
+}
+
+// 确认删除
+const confirmDelete = () => {
+  if (deleteTarget.value) {
+    studentStore.deleteStudent(deleteTarget.value.id)
     ElMessage.success('学生已删除')
-  }).catch(() => {
-    // 用户取消
-  })
+    deleteTarget.value = null
+  }
+}
+
+// 确认永久删除
+const confirmPermanentDelete = () => {
+  if (deleteTarget.value) {
+    studentStore.permanentDeleteStudent(deleteTarget.value.id)
+    ElMessage.success('学生已永久删除')
+    deleteTarget.value = null
+  }
+}
+
+// 取消删除
+const cancelDelete = () => {
+  deleteTarget.value = null
 }
 
 // 恢复学生
@@ -153,31 +200,13 @@ function handleRestore(student: Student) {
   ElMessage.success('学生已恢复')
 }
 
-// 永久删除学生
-function handlePermanentDelete(student: Student) {
-  ElMessageBox.confirm(
-    `确定要永久删除学生 ${student.name} 吗？此操作不可恢复！`,
-    '确认永久删除',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'error'
-    }
-  ).then(() => {
-    studentStore.permanentDeleteStudent(student.id)
-    ElMessage.success('学生已永久删除')
-  }).catch(() => {
-    // 用户取消
-  })
-}
-
 // 批量导入
 function handleImport(students: StudentFormData[]) {
   const result = studentStore.importStudents(students)
   
   if (result.errors.length > 0) {
-    ElMessage.warning(`导入完成：成功 ${result.success} 条，失败 ${result.errors.length} 条`)
-    console.warn('导入错误：', result.errors)
+    ElMessage.warning(`导入完成，但有 ${result.errors.length} 条记录存在问题`)
+    console.warn('导入错误:', result.errors)
   } else {
     ElMessage.success(`成功导入 ${result.success} 名学生`)
   }

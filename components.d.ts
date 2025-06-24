@@ -11,6 +11,7 @@ declare module 'vue' {
     ClassCard: typeof import('./src/components/class/ClassCard.vue')['default']
     ClassForm: typeof import('./src/components/class/ClassForm.vue')['default']
     ClassList: typeof import('./src/components/class/ClassList.vue')['default']
+    ConfirmDialog: typeof import('./src/components/common/ConfirmDialog.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElForm: typeof import('element-plus/es')['ElForm']

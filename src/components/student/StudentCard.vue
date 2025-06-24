@@ -7,8 +7,11 @@
         :alt="student.name"
         class="avatar-img"
       />
-      <div v-else class="avatar-placeholder">
-        <Icon :icon="student.gender === '男' ? 'mdi:account-tie' : 'mdi:account-dress'" />
+      <div v-else class="avatar-placeholder" :class="getAvatarClass(student.gender)">
+        <!-- 使用简单的文字图标 -->
+        <span class="avatar-icon">
+          {{ student.gender === '女' ? '👩' : '👨' }}
+        </span>
       </div>
     </div>
     
@@ -52,54 +55,77 @@
         v-if="student.isDeleted"
         type="danger" 
         size="small" 
-        @click="$emit('permanentDelete', student)"
+        @click="$emit('permanent-delete', student)"
       >
-        永久删除
+        彻底删除
       </el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Student } from '@/types/student'
-import { Icon } from '@iconify/vue'
+import type { Student } from '../../types/student'
 
 interface Props {
   student: Student
 }
 
-interface Emits {
+defineProps<Props>()
+
+defineEmits<{
   edit: [student: Student]
   delete: [student: Student]
   restore: [student: Student]
-  permanentDelete: [student: Student]
-}
+  'permanent-delete': [student: Student]
+}>()
 
-defineProps<Props>()
-defineEmits<Emits>()
+// 获取头像样式类
+function getAvatarClass(gender: string): string {
+  if (gender === '女') {
+    return 'avatar-女'
+  }
+  return 'avatar-男'
+}
 </script>
 
 <style scoped>
 .student-card {
-  @apply bg-white rounded-lg shadow-md p-4 border border-gray-200 transition-all duration-300;
-  @apply hover:shadow-lg hover:scale-105;
+  @apply bg-white rounded-lg shadow-md p-4 transition-all duration-200;
+  @apply hover:shadow-lg border border-gray-200;
 }
 
 .student-card.deleted {
-  @apply bg-gray-100 opacity-60;
+  @apply opacity-60 bg-gray-50;
 }
 
 .student-avatar {
-  @apply flex justify-center mb-3;
+  @apply flex justify-center mb-4;
 }
 
 .avatar-img {
-  @apply w-16 h-16 rounded-full object-cover border-2 border-blue-200;
+  @apply w-16 h-16 rounded-full object-cover border-2 border-gray-200;
 }
 
 .avatar-placeholder {
-  @apply w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-purple-500;
-  @apply flex items-center justify-center text-white text-2xl;
+  @apply w-16 h-16 rounded-full;
+  @apply flex items-center justify-center;
+  @apply transition-all duration-200 hover:scale-105;
+  @apply border-2 border-white shadow-lg;
+}
+
+.avatar-icon {
+  @apply text-3xl;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* 男生头像：蓝紫色渐变 */
+.avatar-男 {
+  @apply bg-gradient-to-br from-blue-400 to-purple-500;
+}
+
+/* 女生头像：粉红色渐变 */
+.avatar-女 {
+  @apply bg-gradient-to-br from-pink-400 to-rose-500;
 }
 
 .student-info {
@@ -127,6 +153,6 @@ defineEmits<Emits>()
 }
 
 .student-actions {
-  @apply flex gap-2 justify-center;
+  @apply flex gap-2 justify-center flex-wrap;
 }
 </style>
