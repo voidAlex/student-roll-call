@@ -86,7 +86,12 @@ const handleSaveClass = (classData: Omit<Class, 'id' | 'createdAt'>) => {
 
 // 更新班级
 const handleUpdateClass = (classData: Class) => {
-  classStore.updateClass(classData)
+  const updatedClass = classStore.updateClass(classData.id, classData)
+  if (updatedClass) {
+    ElMessage.success(`班级 "${updatedClass.name}" 更新成功！`)
+  } else {
+    ElMessage.error('更新失败，班级不存在')
+  }
   showEditForm.value = false
   editingClass.value = null
 }
