@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import type { AttendanceRecord, AttendanceDetail, RollCallSession, RollCallStudent } from '@/types/attendance'
 import { useStudentStore } from './student'
@@ -99,6 +99,68 @@ export const useAttendanceStore = defineStore('attendance', () => {
     }
     
     attendanceRecords.value.push(record)
+    // 添加持久化保存
+    saveAttendanceToStorage()
+  }
+  
+  // 删除考勤记录
+  function deleteAttendanceRecord(id: string): boolean {
+    const index = attendanceRecords.value.findIndex(r => r.id === id)
+    if (index === -1) return false
+    
+    attendanceRecords.value.splice(index, 1)
+    saveAttendanceToStorage()
+    return true
+  }
+  
+  // 获取指定班级的考勤记录
+  function getAttendanceByClass(classId: string): AttendanceRecord[] {
+    return attendanceRecords.value.filter(record => record.classId === classId)
+  }
+  
+  // 获取指定日期范围的考勤记录
+  function getAttendanceByDateRange(startDate: Date, endDate: Date): AttendanceRecord[] {
+    return attendanceRecords.value.filter(record => {
+      const recordDate = new Date(record.date)
+      return recordDate >= startDate && recordDate <= endDate
+    })
+  }
+  
+  // 保存考勤数据到本地存储
+  function saveAttendanceToStorage(): void {
+    try {
+      localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords.value))
+    } catch (error) {
+      console.error('Failed to save attendance records to localStorage:', error)
+    }
+  }
+  
+  // 从本地存储加载考勤数据
+  function loadAttendanceFromStorage(): void {
+    const storedRecords = localStorage.getItem('attendanceRecords')
+    if (storedRecords) {
+      try {
+        const parsedRecords = JSON.parse(storedRecords)
+        // 转换日期字符串为Date对象
+        attendanceRecords.value = parsedRecords.map((record: any) => ({
+          ...record,
+          date: new Date(record.date),
+          details: record.details.map((detail: any) => ({
+            ...detail,
+            time: new Date(detail.time)
+          }))
+        }))
+      } catch (error) {
+        console.error('Failed to parse attendance records from localStorage:', error)
+        attendanceRecords.value = []
+      }
+    }
+  }
+  
+  // 清空所有考勤记录
+  function clearAllAttendanceRecords(): void {
+    attendanceRecords.value = []
+    saveAttendanceToStorage()
   }
   
   // 获取当前学生
@@ -126,6 +188,9 @@ export const useAttendanceStore = defineStore('attendance', () => {
     currentRollCallSession.value = null
   }
   
+  // 初始化时加载数据
+  loadAttendanceFromStorage()
+  
   return {
     attendanceRecords,
     currentRollCallSession,
@@ -133,6 +198,11 @@ export const useAttendanceStore = defineStore('attendance', () => {
     rollCallProgress,
     startRollCall,
     markAttendance,
-    endRollCall
+    endRollCall,
+    deleteAttendanceRecord,
+    getAttendanceByClass,
+    getAttendanceByDateRange,
+    clearAllAttendanceRecords,
+    loadAttendanceFromStorage
   }
 })

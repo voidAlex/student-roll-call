@@ -117,6 +117,8 @@ import { useAttendanceStore } from '@/stores/attendance'
 import { useClassStore } from '@/stores/class'
 import { useStudentStore } from '@/stores/student'
 import { ElMessage } from 'element-plus'
+import { audioManager, AUDIO_NAMES, initAudioResources } from '@/utils/audio'
+import { animationManager } from '@/utils/animation'
 
 const router = useRouter()
 const attendanceStore = useAttendanceStore()
@@ -125,6 +127,17 @@ const classStore = useClassStore()
 
 const showFlowerAnimation = ref(false)
 const showBombAnimation = ref(false)
+const presentButtonRef = ref<HTMLElement>()
+const absentButtonRef = ref<HTMLElement>()
+
+// 组件挂载时初始化音效
+onMounted(async () => {
+  try {
+    await initAudioResources()
+  } catch (error) {
+    console.warn('Failed to initialize audio resources:', error)
+  }
+})
 
 // 开始点名
 function startRollCall() {
@@ -134,6 +147,9 @@ function startRollCall() {
       return
     }
     attendanceStore.startRollCall(classStore.currentClassId)
+    
+    // 播放翻页音效
+    audioManager.playSound(AUDIO_NAMES.FLIP, 0.3)
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : '开始点名失败')
   }
@@ -145,11 +161,27 @@ function markPresent() {
   
   attendanceStore.markAttendance(attendanceStore.currentStudent.studentId, '已到')
   
+  // 播放成功音效
+  audioManager.playSound(AUDIO_NAMES.PRESENT, 0.6)
+  
   // 显示小红花动画
   showFlowerAnimation.value = true
   setTimeout(() => {
     showFlowerAnimation.value = false
   }, 1000)
+  
+  // 创建粒子效果
+  if (presentButtonRef.value) {
+    animationManager.createParticleEffect(presentButtonRef.value, 'success')
+    animationManager.createPulseEffect(presentButtonRef.value)
+  }
+  
+  // 播放翻页音效（如果不是最后一个学生）
+  setTimeout(() => {
+    if (!attendanceStore.currentRollCallSession?.isCompleted) {
+      audioManager.playSound(AUDIO_NAMES.FLIP, 0.2)
+    }
+  }, 500)
 }
 
 // 标记未到
@@ -158,11 +190,27 @@ function markAbsent() {
   
   attendanceStore.markAttendance(attendanceStore.currentStudent.studentId, '未到')
   
+  // 播放错误音效
+  audioManager.playSound(AUDIO_NAMES.ABSENT, 0.6)
+  
   // 显示炸弹动画
   showBombAnimation.value = true
   setTimeout(() => {
     showBombAnimation.value = false
   }, 1000)
+  
+  // 创建粒子效果和震动
+  if (absentButtonRef.value) {
+    animationManager.createParticleEffect(absentButtonRef.value, 'error')
+    animationManager.createShakeEffect(absentButtonRef.value)
+  }
+  
+  // 播放翻页音效（如果不是最后一个学生）
+  setTimeout(() => {
+    if (!attendanceStore.currentRollCallSession?.isCompleted) {
+      audioManager.playSound(AUDIO_NAMES.FLIP, 0.2)
+    }
+  }, 500)
 }
 
 // 退出点名
@@ -172,6 +220,9 @@ function exitRollCall() {
 
 // 完成点名
 function finishRollCall() {
+  // 播放完成音效
+  audioManager.playSound(AUDIO_NAMES.COMPLETE, 0.8)
+  
   attendanceStore.endRollCall()
   ElMessage.success('点名记录已保存')
   router.push('/reports')
@@ -485,14 +536,36 @@ function getAttendanceRate() {
   animation: bombExplode 1s ease-out;
 }
 
+/* 粒子效果样式 */
+.particle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* 按钮增强效果 */
+.present-btn:active,
+.absent-btn:active {
+  transform: scale(0.95);
+}
+
+/* 改进的动画效果 */
 @keyframes flowerBounce {
   0% {
     transform: scale(0) rotate(0deg);
     opacity: 0;
   }
+  25% {
+    transform: scale(0.8) rotate(90deg);
+    opacity: 0.8;
+  }
   50% {
     transform: scale(1.2) rotate(180deg);
     opacity: 1;
+  }
+  75% {
+    transform: scale(1.1) rotate(270deg);
+    opacity: 0.9;
   }
   100% {
     transform: scale(1) rotate(360deg);
@@ -505,12 +578,20 @@ function getAttendanceRate() {
     transform: scale(0);
     opacity: 0;
   }
+  15% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
   30% {
     transform: scale(1.5);
     opacity: 1;
   }
+  60% {
+    transform: scale(2.2);
+    opacity: 0.6;
+  }
   100% {
-    transform: scale(2);
+    transform: scale(3);
     opacity: 0;
   }
 }

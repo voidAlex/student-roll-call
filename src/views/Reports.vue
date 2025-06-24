@@ -153,17 +153,31 @@ const showDetailDialog = ref(false)
 const selectedRecord = ref<AttendanceRecord | null>(null)
 
 // 计算属性
-const totalRecords = computed(() => attendanceStore.attendanceRecords.length)
+// 修改totalRecords，只统计当前班级的记录
+const totalRecords = computed(() => {
+  if (!classStore.currentClassId) return 0
+  return attendanceStore.attendanceRecords.filter(
+    record => record.classId === classStore.currentClassId
+  ).length
+})
 
+// 修改averageAttendanceRate，只计算当前班级的平均出勤率
 const averageAttendanceRate = computed(() => {
-  const records = attendanceStore.attendanceRecords
+  if (!classStore.currentClassId) return 0
+  const records = attendanceStore.attendanceRecords.filter(
+    record => record.classId === classStore.currentClassId
+  )
   if (records.length === 0) return 0
   const totalRate = records.reduce((sum, record) => sum + record.summary.rate, 0)
   return Math.round(totalRate / records.length)
 })
 
+// 修改latestRecord，只获取当前班级的最近点名记录
 const latestRecord = computed(() => {
-  const records = attendanceStore.attendanceRecords
+  if (!classStore.currentClassId) return null
+  const records = attendanceStore.attendanceRecords.filter(
+    record => record.classId === classStore.currentClassId
+  )
   if (records.length === 0) return null
   return records.reduce((latest, record) => 
     new Date(record.date) > new Date(latest.date) ? record : latest
