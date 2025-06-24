@@ -76,15 +76,15 @@
       <!-- 统计信息 -->
       <div class="statistics">
         <div class="stat-item">
-          <span class="stat-label">总学生数：</span>
+          <span class="stat-label">总学生数</span>
           <span class="stat-value">{{ studentStore.currentClassStudents.length }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">可选学生：</span>
+          <span class="stat-label">可选学生</span>
           <span class="stat-value">{{ availableStudentsCount }}</span>
         </div>
         <div class="stat-item">
-          <span class="stat-label">已抽取次数：</span>
+          <span class="stat-label">已抽取次数</span>
           <span class="stat-value">{{ attendanceStore.currentRandomCallSession.history.length }}</span>
         </div>
       </div>
@@ -307,56 +307,33 @@ enableSound: true
 </script>
 
 <style scoped>
-.setting-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.setting-item label {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-}
-
-.count-control {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
+/* 基础布局 */
 .random-call-container {
   min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
   position: relative;
-  padding: 2rem;
   overflow: hidden;
 }
 
-/* 动画背景 */
 .animated-background {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  z-index: -1;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: backgroundShift 20s ease-in-out infinite;
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+@keyframes backgroundShift {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(-20px) translateY(-10px); }
+  50% { transform: translateX(20px) translateY(10px); }
+  75% { transform: translateX(-10px) translateY(20px); }
 }
 
 /* 设置面板 */
@@ -365,36 +342,36 @@ enableSound: true
   justify-content: center;
   align-items: center;
   min-height: 80vh;
+  position: relative;
+  z-index: 1;
 }
 
 .panel-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 30px;
-  padding: 3rem;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
   text-align: center;
-  backdrop-filter: blur(10px);
-  max-width: 500px;
+  max-width: 400px;
   width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-  font-size: 3rem;
-  font-weight: bold;
+  font-size: 2.5rem;
   color: #333;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .class-info {
-  margin-bottom: 2rem;
+  margin: 30px 0;
 }
 
 .class-name {
   font-size: 1.5rem;
+  color: #667eea;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
 }
 
 .student-count {
@@ -404,155 +381,77 @@ enableSound: true
 
 /* 表单样式 */
 .settings-form {
-  margin-bottom: 2rem;
+  margin-bottom: 30px;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
-  text-align: left;
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.form-group label {
-  display: block;
-  font-weight: bold;
+.setting-item label {
+  font-weight: 600;
   color: #333;
-  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
 }
 
-.number-input {
+.count-control {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  gap: 15px;
 }
 
 .count-btn {
   width: 40px;
   height: 40px;
-  border: none;
+  border: 2px solid #667eea;
+  background: white;
+  color: #667eea;
   border-radius: 50%;
-  background: #3b82f6;
-  color: white;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .count-btn:hover:not(:disabled) {
-  background: #2563eb;
-  transform: scale(1.1);
+  background: #667eea;
+  color: white;
 }
 
 .count-btn:disabled {
-  background: #d1d5db;
+  border-color: #d1d5db;
+  color: #d1d5db;
   cursor: not-allowed;
 }
 
 .count-display {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #333;
-  min-width: 3rem;
+  min-width: 2rem;
   text-align: center;
-}
-
-/* 复选框样式 */
-.checkbox-label {
-  display: flex !important;
-  align-items: center;
-  cursor: pointer;
-  font-weight: normal !important;
-}
-
-.checkbox {
-  display: none;
-}
-
-.checkmark {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #3b82f6;
-  border-radius: 4px;
-  margin-right: 0.5rem;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.checkbox:checked + .checkmark {
-  background: #3b82f6;
-}
-
-.checkbox:checked + .checkmark::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-weight: bold;
-}
-
-/* 单选框样式 */
-.radio-group {
-  display: flex;
-  gap: 1rem;
-}
-
-.radio-label {
-  display: flex !important;
-  align-items: center;
-  cursor: pointer;
-  font-weight: normal !important;
-}
-
-.radio {
-  display: none;
-}
-
-.radio-mark {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #3b82f6;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.radio:checked + .radio-mark {
-  background: #3b82f6;
-}
-
-.radio:checked + .radio-mark::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: white;
 }
 
 /* 按钮样式 */
 .start-btn {
-  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(45deg, #667eea, #764ba2);
   color: white;
   border: none;
   border-radius: 25px;
-  padding: 1rem 3rem;
+  padding: 15px 40px;
   font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
 .start-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
 }
 
 .start-btn:disabled {
@@ -565,58 +464,66 @@ enableSound: true
 .random-call-active {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 20px;
   align-items: center;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .control-panel {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 1.5rem;
+  border-radius: 15px;
+  padding: 25px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 800px;
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .session-info h3 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 10px 0;
   color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .session-info p {
   margin: 0;
   color: #666;
+  font-size: 1.1rem;
 }
 
 .control-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 15px;
 }
 
 .pick-btn, .reset-btn, .end-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   border: none;
-  border-radius: 15px;
+  border-radius: 25px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 1rem;
 }
 
 .pick-btn {
-  background: linear-gradient(45deg, #10b981, #34d399);
+  background: linear-gradient(45deg, #10b981, #059669);
   color: white;
 }
 
 .reset-btn {
-  background: linear-gradient(45deg, #f59e0b, #fbbf24);
+  background: linear-gradient(45deg, #f59e0b, #d97706);
   color: white;
 }
 
 .end-btn {
-  background: linear-gradient(45deg, #ef4444, #f87171);
+  background: linear-gradient(45deg, #ef4444, #dc2626);
   color: white;
 }
 
@@ -624,6 +531,7 @@ enableSound: true
 .reset-btn:hover,
 .end-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .pick-btn:disabled {
@@ -633,65 +541,72 @@ enableSound: true
 
 /* 统计信息 */
 .statistics {
-  display: flex;
-  gap: 2rem;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 1.5rem;
-  backdrop-filter: blur(10px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
 .stat-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 25px;
   text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .stat-label {
   display: block;
   color: #666;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
 }
 
 .stat-value {
   display: block;
   color: #333;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
 /* 历史记录 */
 .history-panel {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 1.5rem;
+  border-radius: 15px;
+  padding: 25px;
   width: 100%;
-  max-width: 800px;
   backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .history-panel h4 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 20px 0;
   color: #333;
   text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
 }
 
 .history-list {
   max-height: 300px;
   overflow-y: auto;
+  display: grid;
+  gap: 15px;
 }
 
 .history-item {
   background: #f8fafc;
   border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
+  padding: 15px;
+  border-left: 4px solid #667eea;
 }
 
 .history-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 10px;
 }
 
 .history-index {
@@ -706,14 +621,14 @@ enableSound: true
 
 .history-students {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .history-student {
-  background: #3b82f6;
+  background: #667eea;
   color: white;
-  padding: 0.25rem 0.75rem;
+  padding: 4px 12px;
   border-radius: 15px;
   font-size: 0.9rem;
 }

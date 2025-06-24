@@ -70,10 +70,10 @@ const handleSaveClass = (classData: Omit<Class, 'id' | 'createdAt'>) => {
   isAdding.value = true
   const newClass = classStore.addClass(classData)
   newlyAddedId.value = newClass.id
-  
+
   // 立即关闭弹窗
   showAddForm.value = false
-  
+
   // 显示成功消息
   ElMessage.success(`班级 "${newClass.name}" 创建成功！`)
 
@@ -112,7 +112,6 @@ const currentClass = computed(() => classStore.currentClass)
   <div class="class-list">
     <!-- 头部操作栏 -->
     <div class="list-header">
-      <h2 class="page-title">班级管理</h2>
       <el-button
         type="primary"
         :icon="Plus"
