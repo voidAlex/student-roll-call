@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useClassStore } from '../../stores/class'
 import type { Class } from '../../types/class'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import ClassCard from './ClassCard.vue'
 import ClassForm from './ClassForm.vue'
 import { Plus } from '@element-plus/icons-vue'
@@ -36,12 +36,16 @@ const confirmDelete = () => {
     } else {
       ElMessage.error('删除失败')
     }
+    // Close dialog first, then clear target
+    showDeleteConfirm.value = false
     deleteTarget.value = null
   }
 }
 
 // 取消删除
 const cancelDelete = () => {
+  // Close dialog first, then clear target
+  showDeleteConfirm.value = false
   deleteTarget.value = null
 }
 
@@ -67,7 +71,7 @@ const handleSaveClass = (classData: Omit<Class, 'id' | 'createdAt'>) => {
   const newClass = classStore.addClass(classData)
   newlyAddedId.value = newClass.id
   showAddForm.value = false
-  
+
   // 2秒后移除新增动画
   setTimeout(() => {
     newlyAddedId.value = null
@@ -99,9 +103,9 @@ const currentClass = computed(() => classStore.currentClass)
     <!-- 头部操作栏 -->
     <div class="list-header">
       <h2 class="page-title">班级管理</h2>
-      <el-button 
-        type="primary" 
-        :icon="Plus" 
+      <el-button
+        type="primary"
+        :icon="Plus"
         @click="handleAddClass"
         class="add-button"
       >
@@ -115,7 +119,7 @@ const currentClass = computed(() => classStore.currentClass)
         <ClassCard
           v-for="classItem in classList"
           :key="classItem.id"
-          :class-item="classItem"
+          :class-data="classItem"
           :is-current="currentClass?.id === classItem.id"
           :class="{ 'newly-added': newlyAddedId === classItem.id }"
           @select="handleSelectClass"
@@ -155,7 +159,7 @@ const currentClass = computed(() => classStore.currentClass)
     <ConfirmDialog
       v-model="showDeleteConfirm"
       title="删除确认"
-      :message="`确定要删除班级 \"${deleteTarget?.name}\" 吗？删除后将无法恢复！`"
+      :message="`确定要删除班级 '${deleteTarget?.name}' 吗？删除后将无法恢复！`"
       confirm-text="确定删除"
       cancel-text="取消"
       type="warning"

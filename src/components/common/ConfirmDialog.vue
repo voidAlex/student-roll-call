@@ -7,6 +7,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="true"
     center
+    align-center
     class="confirm-dialog"
   >
     <div class="dialog-content">
@@ -117,7 +118,18 @@ const handleCancel = () => {
   gap: 12px;
 }
 
+/* 确保弹窗完全居中 */
+:deep(.el-overlay) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 :deep(.el-dialog) {
+  position: relative !important;
+  margin: 0 !important;
+  top: auto !important;
+  transform: none !important;
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
