@@ -33,6 +33,7 @@ const handleClassChange = (classId: string) => {
         <nav class="main-nav">
           <RouterLink to="/" class="nav-link">首页</RouterLink>
           <RouterLink to="/class-manage" class="nav-link">班级管理</RouterLink>
+          <RouterLink to="/student-manage" class="nav-link">学生管理</RouterLink>
           <RouterLink to="/about" class="nav-link">关于</RouterLink>
         </nav>
         
