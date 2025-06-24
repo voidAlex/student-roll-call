@@ -65,12 +65,17 @@ const handleAddClass = () => {
   showAddForm.value = true
 }
 
-// 保存新班级
+// 保存新班级 - 修改这个函数
 const handleSaveClass = (classData: Omit<Class, 'id' | 'createdAt'>) => {
   isAdding.value = true
   const newClass = classStore.addClass(classData)
   newlyAddedId.value = newClass.id
+  
+  // 立即关闭弹窗
   showAddForm.value = false
+  
+  // 显示成功消息
+  ElMessage.success(`班级 "${newClass.name}" 创建成功！`)
 
   // 2秒后移除新增动画
   setTimeout(() => {
@@ -86,7 +91,7 @@ const handleUpdateClass = (classData: Class) => {
   editingClass.value = null
 }
 
-// 取消操作
+// 取消操作 - 修改这个函数
 const handleCancel = () => {
   showAddForm.value = false
   showEditForm.value = false
@@ -136,24 +141,39 @@ const currentClass = computed(() => classStore.currentClass)
       <p>点击上方按钮添加第一个班级</p>
     </div>
 
-    <!-- 添加班级表单弹窗 -->
-    <ClassForm
-      v-if="showAddForm"
-      :visible="showAddForm"
+    <!-- 添加班级表单弹窗 - 修改为弹窗形式 -->
+    <el-dialog
+      v-model="showAddForm"
       title="添加班级"
-      @save="handleSaveClass"
-      @cancel="handleCancel"
-    />
+      width="500px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      center
+      class="class-form-dialog"
+    >
+      <ClassForm
+        @success="handleSaveClass"
+        @cancel="handleCancel"
+      />
+    </el-dialog>
 
     <!-- 编辑班级表单弹窗 -->
-    <ClassForm
-      v-if="showEditForm && editingClass"
-      :visible="showEditForm"
-      :class-data="editingClass"
+    <el-dialog
+      v-model="showEditForm"
       title="编辑班级"
-      @save="handleUpdateClass"
-      @cancel="handleCancel"
-    />
+      width="500px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="true"
+      center
+      class="class-form-dialog"
+    >
+      <ClassForm
+        v-if="editingClass"
+        :edit-class="editingClass"
+        @success="handleUpdateClass"
+        @cancel="handleCancel"
+      />
+    </el-dialog>
 
     <!-- 删除确认弹窗 -->
     <ConfirmDialog
@@ -199,63 +219,23 @@ const currentClass = computed(() => classStore.currentClass)
   animation: celebrateNew 2s ease-in-out;
 }
 
-@keyframes celebrateNew {
-  0% {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-  }
+/* 弹窗样式 */
+.class-form-dialog {
+  --el-dialog-bg-color: #ffffff;
+  --el-dialog-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
-/* 列表项动画 */
-.class-list-enter-active {
-  transition: all 0.4s ease;
+:deep(.class-form-dialog .el-dialog) {
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
-.class-list-leave-active {
-  transition: all 0.3s ease;
+:deep(.class-form-dialog .el-dialog__header) {
+  padding: 20px 20px 10px;
+  border-bottom: 1px solid #ebeef5;
 }
 
-.class-list-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.class-list-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-.class-list-move {
-  transition: transform 0.3s ease;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: #666;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  margin-bottom: 16px;
-}
-
-.empty-state h3 {
-  font-size: 1.25rem;
-  color: #2c3e50;
-  margin: 16px 0 8px 0;
-}
-
-.empty-state p {
-  font-size: 0.9rem;
-  color: #7f8c8d;
-  margin: 0;
+:deep(.class-form-dialog .el-dialog__body) {
+  padding: 20px;
 }
 </style>

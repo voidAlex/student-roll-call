@@ -2,14 +2,14 @@
 import { computed, reactive, ref, watch, onMounted } from 'vue'
 import { useClassStore } from '../../stores/class'
 import type { Class } from '../../types/class'
-import { ElMessage } from 'element-plus'
 
 interface Props {
   editClass?: Class | null
 }
 
 interface Emits {
-  success: []
+  success: [classData?: any]
+  cancel: []
 }
 
 const props = defineProps<Props>()
@@ -49,7 +49,7 @@ const isEditMode = computed(() => {
   return !!props.editClass
 })
 
-// 重置表单 - 移到前面定义
+// 重置表单
 const resetForm = () => {
   formData.name = ''
   formData.grade = ''
@@ -78,7 +78,7 @@ onMounted(() => {
   initFormData()
 })
 
-// 提交表单
+// 提交表单 - 修改这个函数
 const handleSubmit = async () => {
   if (!formRef.value) return
   
@@ -88,24 +88,18 @@ const handleSubmit = async () => {
     
     if (isEditMode.value && props.editClass) {
       // 编辑班级
-      const updatedClass = classStore.updateClass(props.editClass.id, formData)
-      if (updatedClass) {
-        ElMessage.success(`班级 "${updatedClass.name}" 更新成功！`)
-      } else {
-        ElMessage.error('更新失败，班级不存在')
-        return
+      const updatedClass = {
+        ...props.editClass,
+        ...formData
       }
+      emit('success', updatedClass)
     } else {
-      // 添加班级
-      const newClass = classStore.addClass(formData)
-      ElMessage.success(`班级 "${newClass.name}" 创建成功！`)
+      // 添加班级 - 只传递表单数据，不在这里处理store逻辑
+      emit('success', { ...formData })
     }
     
     // 重置表单
     resetForm()
-    
-    // 触发成功事件
-    emit('success')
     
   } catch (error) {
     console.error('表单验证失败:', error)
@@ -114,10 +108,10 @@ const handleSubmit = async () => {
   }
 }
 
-// 取消操作
+// 取消操作 - 修改这个函数
 const handleCancel = () => {
   resetForm()
-  emit('success')  // 关闭对话框
+  emit('cancel')
 }
 </script>
 
