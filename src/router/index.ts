@@ -24,6 +24,16 @@ const router = createRouter({
       name: 'studentManage',
       component: () => import('../views/StudentManage.vue'),
     },
+    {
+      path: '/roll-call',
+      name: 'rollCall',
+      component: () => import('../views/RollCall.vue'),
+    },
+    {
+      path: '/reports',
+      name: 'reports',
+      component: () => import('../views/Reports.vue'),
+    },
   ],
 })
 

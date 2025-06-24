@@ -1,0 +1,138 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { v4 as uuidv4 } from 'uuid'
+import type { AttendanceRecord, AttendanceDetail, RollCallSession, RollCallStudent } from '@/types/attendance'
+import { useStudentStore } from './student'
+import { useClassStore } from './class'
+
+export const useAttendanceStore = defineStore('attendance', () => {
+  // 考勤记录
+  const attendanceRecords = ref<AttendanceRecord[]>([])
+  
+  // 当前点名会话
+  const currentRollCallSession = ref<RollCallSession | null>(null)
+  
+  // 开始全员点名
+  function startRollCall(classId: string): RollCallSession {
+    const studentStore = useStudentStore()
+    const students = studentStore.currentClassStudents
+    
+    if (students.length === 0) {
+      throw new Error('当前班级没有学生，无法开始点名')
+    }
+    
+    const rollCallStudents: RollCallStudent[] = students.map(student => ({
+      studentId: student.id,
+      name: student.name,
+      studentNo: student.studentNo,
+      avatar: student.avatar
+    }))
+    
+    const session: RollCallSession = {
+      id: uuidv4(),
+      classId,
+      startTime: new Date(),
+      currentIndex: 0,
+      isCompleted: false,
+      students: rollCallStudents
+    }
+    
+    currentRollCallSession.value = session
+    return session
+  }
+  
+  // 标记学生出勤状态
+  function markAttendance(studentId: string, status: '已到' | '未到') {
+    if (!currentRollCallSession.value) {
+      throw new Error('没有进行中的点名会话')
+    }
+    
+    const session = currentRollCallSession.value
+    const student = session.students.find(s => s.studentId === studentId)
+    
+    if (!student) {
+      throw new Error('学生不存在')
+    }
+    
+    student.status = status
+    student.time = new Date()
+    
+    // 移动到下一个学生
+    if (session.currentIndex < session.students.length - 1) {
+      session.currentIndex++
+    } else {
+      // 点名完成
+      session.isCompleted = true
+      saveRollCallRecord()
+    }
+  }
+  
+  // 保存点名记录
+  function saveRollCallRecord() {
+    if (!currentRollCallSession.value) return
+    
+    const session = currentRollCallSession.value
+    const details: AttendanceDetail[] = session.students
+      .filter(s => s.status && s.time)
+      .map(s => ({
+        studentId: s.studentId,
+        status: s.status!,
+        time: s.time!
+      }))
+    
+    const presentCount = details.filter(d => d.status === '已到').length
+    const absentCount = details.filter(d => d.status === '未到').length
+    const total = session.students.length
+    
+    const record: AttendanceRecord = {
+      id: uuidv4(),
+      classId: session.classId,
+      date: session.startTime,
+      type: '全员点名',
+      details,
+      summary: {
+        total,
+        present: presentCount,
+        absent: absentCount,
+        rate: Math.round((presentCount / total) * 100)
+      }
+    }
+    
+    attendanceRecords.value.push(record)
+  }
+  
+  // 获取当前学生
+  const currentStudent = computed(() => {
+    if (!currentRollCallSession.value) return null
+    const session = currentRollCallSession.value
+    return session.students[session.currentIndex] || null
+  })
+  
+  // 获取点名进度
+  const rollCallProgress = computed(() => {
+    if (!currentRollCallSession.value) return { current: 0, total: 0, percentage: 0 }
+    const session = currentRollCallSession.value
+    const current = session.currentIndex + 1
+    const total = session.students.length
+    const percentage = Math.round((current / total) * 100)
+    return { current, total, percentage }
+  })
+  
+  // 结束点名会话
+  function endRollCall() {
+    if (currentRollCallSession.value && !currentRollCallSession.value.isCompleted) {
+      saveRollCallRecord()
+    }
+    currentRollCallSession.value = null
+  }
+  
+  return {
+    attendanceRecords,
+    currentRollCallSession,
+    currentStudent,
+    rollCallProgress,
+    startRollCall,
+    markAttendance,
+    endRollCall
+  }
+})

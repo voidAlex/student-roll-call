@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AttendanceStatus: typeof import('./src/components/rollcall/AttendanceStatus.vue')['default']
     ClassCard: typeof import('./src/components/class/ClassCard.vue')['default']
     ClassForm: typeof import('./src/components/class/ClassForm.vue')['default']
     ClassList: typeof import('./src/components/class/ClassList.vue')['default']
@@ -37,6 +38,7 @@ declare module 'vue' {
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     ImportModal: typeof import('./src/components/student/ImportModal.vue')['default']
+    RollCallCard: typeof import('./src/components/rollcall/RollCallCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StudentCard: typeof import('./src/components/student/StudentCard.vue')['default']

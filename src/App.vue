@@ -23,22 +23,22 @@ const handleClassChange = (classId: string) => {
 
 <template>
   <div id="app">
-    <!-- 顶部导航 -->
     <header class="app-header">
       <div class="header-content">
         <div class="logo">
-          <h1>初中生点名系统</h1>
+          <h1>学生点名系统</h1>
         </div>
-        
         <nav class="main-nav">
           <RouterLink to="/" class="nav-link">首页</RouterLink>
           <RouterLink to="/class-manage" class="nav-link">班级管理</RouterLink>
           <RouterLink to="/student-manage" class="nav-link">学生管理</RouterLink>
+          <RouterLink to="/roll-call" class="nav-link">全员点名</RouterLink>
+          <RouterLink to="/reports" class="nav-link">考勤报告</RouterLink>
           <RouterLink to="/about" class="nav-link">关于</RouterLink>
         </nav>
         
-        <!-- 班级切换下拉选择 -->
-        <div class="class-selector">
+        <!-- 班级选择器 -->
+        <div class="class-selector" v-if="classStore.classes.length > 0">
           <div v-if="classStore.classes.length === 0" class="no-class">
             <el-tag type="info">暂无班级</el-tag>
           </div>
@@ -70,8 +70,7 @@ const handleClassChange = (classId: string) => {
         </div>
       </div>
     </header>
-    
-    <!-- 主要内容区域 -->
+
     <main class="app-main">
       <RouterView />
     </main>
