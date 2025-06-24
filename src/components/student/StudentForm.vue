@@ -36,31 +36,26 @@
       </el-form-item>
       
       <el-form-item label="头像">
-        <div class="avatar-upload">
-          <div class="avatar-preview">
-            <img 
-              v-if="formData.avatar" 
-              :src="formData.avatar" 
-              alt="头像预览"
-              class="preview-img"
-            />
-            <div v-else class="preview-placeholder">
-              <Icon icon="mdi:camera" class="text-2xl" />
-              <span class="text-sm">点击上传头像</span>
-            </div>
+        <div class="emoji-selector">
+          <!-- 当前选择的emoji预览 -->
+          <div class="current-emoji">
+            <span class="emoji-preview">
+              {{ formData.avatar || getDefaultEmojiByGender(formData.gender) }}
+            </span>
+            <span class="emoji-label">当前头像</span>
           </div>
           
-          <input
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            class="hidden"
-            @change="handleFileChange"
-          />
-          
-          <div class="upload-actions">
-            <el-button size="small" @click="$refs.fileInput.click()">
-              选择图片
+          <!-- emoji选择按钮 -->
+          <div class="emoji-actions">
+            <el-button size="small" @click="showEmojiPicker = true">
+              选择Emoji
+            </el-button>
+            
+            <el-button 
+              size="small" 
+              @click="formData.avatar = generateRandomEmoji()"
+            >
+              随机生成
             </el-button>
             
             <el-button 
@@ -69,12 +64,48 @@
               type="danger" 
               @click="formData.avatar = ''"
             >
-              删除
+              重置
             </el-button>
           </div>
         </div>
       </el-form-item>
     </el-form>
+    
+    <!-- Emoji选择器弹窗 -->
+    <el-dialog
+      v-model="showEmojiPicker"
+      title="选择Emoji头像"
+      width="600px"
+      append-to-body
+    >
+      <div class="emoji-picker">
+        <el-tabs v-model="activeCategory">
+          <el-tab-pane 
+            v-for="(category, key) in EMOJI_CATEGORIES" 
+            :key="key"
+            :label="category.name" 
+            :name="key"
+          >
+            <div class="emoji-grid">
+              <div 
+                v-for="emoji in category.emojis" 
+                :key="emoji"
+                class="emoji-item"
+                :class="{ active: formData.avatar === emoji }"
+                @click="selectEmoji(emoji)"
+              >
+                {{ emoji }}
+              </div>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      
+      <template #footer>
+        <el-button @click="showEmojiPicker = false">取消</el-button>
+        <el-button type="primary" @click="showEmojiPicker = false">确定</el-button>
+      </template>
+    </el-dialog>
     
     <template #footer>
       <div class="dialog-footer">
@@ -89,8 +120,8 @@
 import { ref, reactive, watch } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { Icon } from '@iconify/vue'
 import type { Student, StudentFormData } from '@/types/student'
+import { EMOJI_CATEGORIES, getDefaultEmojiByGender, generateRandomEmoji } from '@/utils/emoji'
 
 interface Props {
   modelValue: boolean
@@ -107,7 +138,10 @@ const emit = defineEmits<Emits>()
 
 // 表单引用
 const formRef = ref<FormInstance>()
-const fileInput = ref<HTMLInputElement>()
+
+// emoji选择器状态
+const showEmojiPicker = ref(false)
+const activeCategory = ref('people')
 
 // 表单数据
 const formData = reactive<StudentFormData>({
@@ -144,35 +178,24 @@ watch(() => props.student, (student) => {
   }
 }, { immediate: true })
 
-// 处理文件选择
-function handleFileChange(event: Event) {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (!file) return
-  
-  // 验证文件类型
-  if (!file.type.startsWith('image/')) {
-    ElMessage.error('请选择图片文件')
-    return
+// 监听弹窗打开状态，为新学生自动生成随机emoji头像
+watch(() => props.modelValue, (isOpen) => {
+  if (isOpen && !props.student) {
+    // 弹窗打开且是添加新学生时，自动生成随机emoji头像
+    formData.avatar = generateRandomEmoji()
   }
-  
-  // 验证文件大小（限制2MB）
-  if (file.size > 2 * 1024 * 1024) {
-    ElMessage.error('图片大小不能超过2MB')
-    return
-  }
-  
-  // 读取文件并转换为base64
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    formData.avatar = e.target?.result as string
-  }
-  reader.readAsDataURL(file)
+})
+
+// 选择emoji
+function selectEmoji(emoji: string) {
+  formData.avatar = emoji
 }
 
 // 提交表单
 function handleSubmit() {
   formRef.value?.validate((valid) => {
     if (valid) {
+      // 移除这里的随机生成逻辑，因为已经在弹窗打开时生成了
       emit('submit', { ...formData })
     }
   })
@@ -195,26 +218,42 @@ function resetForm() {
 </script>
 
 <style scoped>
-.avatar-upload {
+.emoji-selector {
   @apply flex items-center gap-4;
 }
 
-.avatar-preview {
-  @apply w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg;
-  @apply flex items-center justify-center cursor-pointer;
-  @apply hover:border-blue-400 transition-colors;
+.current-emoji {
+  @apply flex flex-col items-center;
 }
 
-.preview-img {
-  @apply w-full h-full object-cover rounded-lg;
+.emoji-preview {
+  @apply text-4xl mb-2 w-16 h-16 flex items-center justify-center;
+  @apply border-2 border-gray-200 rounded-lg bg-gray-50;
 }
 
-.preview-placeholder {
-  @apply flex flex-col items-center justify-center text-gray-400;
+.emoji-label {
+  @apply text-xs text-gray-500;
 }
 
-.upload-actions {
+.emoji-actions {
   @apply flex flex-col gap-2;
+}
+
+.emoji-picker {
+  @apply max-h-96 overflow-y-auto;
+}
+
+.emoji-grid {
+  @apply grid grid-cols-8 gap-2 p-4;
+}
+
+.emoji-item {
+  @apply text-2xl p-2 rounded cursor-pointer text-center;
+  @apply hover:bg-blue-50 transition-colors;
+}
+
+.emoji-item.active {
+  @apply bg-blue-100 border-2 border-blue-400;
 }
 
 .dialog-footer {

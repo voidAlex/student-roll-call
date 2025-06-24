@@ -1,8 +1,9 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import type { Student, StudentFormData } from '../types/student'
+import { ref, computed } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
+import type { Student, StudentFormData, ImportStudentData } from '@/types/student'
 import { useClassStore } from './class'
+import { generateRandomEmoji } from '@/utils/emoji'
 
 export const useStudentStore = defineStore('student', () => {
   // 学生列表
@@ -59,7 +60,8 @@ export const useStudentStore = defineStore('student', () => {
       studentNo: studentData.studentNo,
       name: studentData.name,
       gender: studentData.gender,
-      avatar: studentData.avatar,
+      // 如果没有提供头像，自动生成随机emoji
+      avatar: studentData.avatar || generateRandomEmoji(),
       createdAt: new Date(),
       isDeleted: false
     }
@@ -107,7 +109,7 @@ export const useStudentStore = defineStore('student', () => {
           studentNo: studentData.studentNo,
           name: studentData.name,
           gender: studentData.gender,
-          avatar: studentData.avatar,
+          avatar: studentData.avatar || generateRandomEmoji(), // 如果没有头像，生成随机emoji
           createdAt: new Date(),
           isDeleted: false
         }

@@ -1,16 +1,10 @@
 <template>
   <div class="student-card" :class="{ 'deleted': student.isDeleted }">
     <div class="student-avatar">
-      <img 
-        v-if="student.avatar" 
-        :src="student.avatar" 
-        :alt="student.name"
-        class="avatar-img"
-      />
-      <div v-else class="avatar-placeholder" :class="getAvatarClass(student.gender)">
-        <!-- 使用简单的文字图标 -->
-        <span class="avatar-icon">
-          {{ student.gender === '女' ? '👩' : '👨' }}
+      <!-- 直接显示emoji头像 -->
+      <div class="avatar-emoji" :class="getAvatarClass(student.gender)">
+        <span class="emoji-icon">
+          {{ student.avatar || getDefaultEmojiByGender(student.gender) }}
         </span>
       </div>
     </div>
@@ -65,6 +59,7 @@
 
 <script setup lang="ts">
 import type { Student } from '../../types/student'
+import { getDefaultEmojiByGender } from '@/utils/emoji'
 
 interface Props {
   student: Student
@@ -102,28 +97,24 @@ function getAvatarClass(gender: string): string {
   @apply flex justify-center mb-4;
 }
 
-.avatar-img {
-  @apply w-16 h-16 rounded-full object-cover border-2 border-gray-200;
-}
-
-.avatar-placeholder {
+.avatar-emoji {
   @apply w-16 h-16 rounded-full;
   @apply flex items-center justify-center;
   @apply transition-all duration-200 hover:scale-105;
   @apply border-2 border-white shadow-lg;
 }
 
-.avatar-icon {
+.emoji-icon {
   @apply text-3xl;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-/* 男生头像：蓝紫色渐变 */
+/* 男生头像：蓝紫色渐变背景 */
 .avatar-男 {
   @apply bg-gradient-to-br from-blue-400 to-purple-500;
 }
 
-/* 女生头像：粉红色渐变 */
+/* 女生头像：粉红色渐变背景 */
 .avatar-女 {
   @apply bg-gradient-to-br from-pink-400 to-rose-500;
 }
