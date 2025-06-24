@@ -34,6 +34,12 @@ const router = createRouter({
       name: 'reports',
       component: () => import('../views/Reports.vue'),
     },
+    // 在现有路由中添加随机点名路由
+    {
+      path: '/random-call',
+      name: 'randomCall',
+      component: () => import('../views/RandomCall.vue'),
+    }
   ],
 })
 

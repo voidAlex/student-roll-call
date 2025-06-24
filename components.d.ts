@@ -38,6 +38,7 @@ declare module 'vue' {
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     ImportModal: typeof import('./src/components/student/ImportModal.vue')['default']
+    RandomPicker: typeof import('./src/components/rollcall/RandomPicker.vue')['default']
     RollCallCard: typeof import('./src/components/rollcall/RollCallCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

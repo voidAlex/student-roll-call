@@ -33,6 +33,7 @@ const handleClassChange = (classId: string) => {
           <RouterLink to="/class-manage" class="nav-link">班级管理</RouterLink>
           <RouterLink to="/student-manage" class="nav-link">学生管理</RouterLink>
           <RouterLink to="/roll-call" class="nav-link">全员点名</RouterLink>
+          <RouterLink to="/random-call" class="nav-link">随机点名</RouterLink>
           <RouterLink to="/reports" class="nav-link">考勤报告</RouterLink>
           <RouterLink to="/about" class="nav-link">关于</RouterLink>
         </nav>
