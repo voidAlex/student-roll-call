@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
-  "productName": "学生点名系统",
+  "productName": "Student Roll Call",
   "version": "1.0.0",
   "identifier": "com.student.rollcall",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "学生点名系统",
+        "title": "Student Roll Call",
         "width": 1200,
         "height": 800,
         "minWidth": 800,
@@ -29,7 +29,7 @@
     "active": true,
     "targets": "all",
     "category": "Education",
-    "shortDescription": "学生点名系统",
+    "shortDescription": "Student Roll Call System",
     "longDescription": "一款面向教师使用的学生点名软件",
     "icon": [
       "icons/32x32.png",
