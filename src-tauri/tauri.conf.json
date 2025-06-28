@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "identifier": "com.student.rollcall",
   "build": {
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npx vite build",
     "beforeDevCommand": "npm run dev",
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173"

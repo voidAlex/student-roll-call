@@ -125,7 +125,7 @@ import { useAttendanceStore } from '@/stores/attendance'
 import { useStudentStore } from '@/stores/student'
 import { useClassStore } from '@/stores/class'
 import RandomPicker from '@/components/rollcall/RandomPicker.vue'
-import type { RandomCallSettings } from '@/types/attendance'
+import type { RandomCallSettings, RollCallStudent } from '@/types/attendance'
 
 const router = useRouter()
 const attendanceStore = useAttendanceStore()
@@ -133,7 +133,7 @@ const studentStore = useStudentStore()
 const classStore = useClassStore()
 
 const isSpinning = ref(false)
-const currentSelectedStudents = ref([])
+const currentSelectedStudents = ref<RollCallStudent[]>([])
 const selectedStudentIndex = ref(-1) // 新增：选中学生的索引
 
 // 设置
@@ -168,8 +168,8 @@ const availableStudents = computed(() => {
   }))
 
   if (session.excludeSelected) {
-    const selectedIds = session.selectedStudents.map(s => s.studentId)
-    return allStudents.filter(s => !selectedIds.includes(s.studentId))
+    const selectedIds = session.selectedStudents.map((s: any) => s.studentId)
+    return allStudents.filter((s: any) => !selectedIds.includes(s.studentId))
   }
 
   return allStudents
@@ -219,7 +219,7 @@ function performPick() {
   let selectedStudents
   try {
     selectedStudents = attendanceStore.performRandomPick()
-  } catch (error) {
+  } catch (error: any) {
     alert(error.message)
     return
   }
@@ -310,7 +310,7 @@ enableSound: true
 /* 基础布局 */
 .random-call-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 25%, #a29bfe 50%, #6c5ce7 75%, #fd79a8 100%);
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -347,18 +347,19 @@ enableSound: true
 }
 
 .panel-card {
-  background: white;
+  background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e17055 100%);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
   max-width: 400px;
   width: 100%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .title {
   font-size: 2.5rem;
-  color: #333;
+  color: white;
   margin-bottom: 20px;
   font-weight: bold;
 }
@@ -369,13 +370,13 @@ enableSound: true
 
 .class-name {
   font-size: 1.5rem;
-  color: #667eea;
+  color: white;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
 .student-count {
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
 }
 
@@ -393,7 +394,7 @@ enableSound: true
 
 .setting-item label {
   font-weight: 600;
-  color: #333;
+  color: white;
   font-size: 1.1rem;
 }
 
@@ -473,7 +474,7 @@ enableSound: true
 }
 
 .control-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #74b9ff 100%);
   border-radius: 15px;
   padding: 25px;
   display: flex;
@@ -482,18 +483,19 @@ enableSound: true
   width: 100%;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .session-info h3 {
   margin: 0 0 10px 0;
-  color: #333;
+  color: white;
   font-size: 1.5rem;
   font-weight: bold;
 }
 
 .session-info p {
   margin: 0;
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
 }
 
@@ -548,7 +550,7 @@ enableSound: true
 }
 
 .stat-item {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
   border-radius: 15px;
   padding: 25px;
   text-align: center;
@@ -558,21 +560,21 @@ enableSound: true
 
 .stat-label {
   display: block;
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
   margin-bottom: 10px;
 }
 
 .stat-value {
   display: block;
-  color: #333;
+  color: white;
   font-size: 2rem;
   font-weight: bold;
 }
 
 /* 历史记录 */
 .history-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #feca57, #ff9ff3, #54a0ff, #5f27cd);
   border-radius: 15px;
   padding: 25px;
   width: 100%;
@@ -582,7 +584,7 @@ enableSound: true
 
 .history-panel h4 {
   margin: 0 0 20px 0;
-  color: #333;
+  color: white;
   text-align: center;
   font-size: 1.3rem;
   font-weight: bold;
@@ -596,10 +598,11 @@ enableSound: true
 }
 
 .history-item {
-  background: #f8fafc;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
   border-radius: 10px;
   padding: 15px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
 }
 
 .history-header {
@@ -611,11 +614,11 @@ enableSound: true
 
 .history-index {
   font-weight: bold;
-  color: #333;
+  color: white;
 }
 
 .history-time {
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
 }
 

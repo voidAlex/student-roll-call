@@ -6,8 +6,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'studentManage',
+      component: () => import('../views/StudentManage.vue'),
     },
     {
       path: '/about',
@@ -18,11 +18,6 @@ const router = createRouter({
       path: '/class-manage',
       name: 'classManage',
       component: () => import('../views/ClassManage.vue'),
-    },
-    {
-      path: '/student-manage',
-      name: 'studentManage',
-      component: () => import('../views/StudentManage.vue'),
     },
     {
       path: '/roll-call',

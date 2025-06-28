@@ -29,7 +29,7 @@ onMounted(() => {
 <style scoped>
 .class-manage {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 25%, #4facfe 50%, #00f2fe 75%, #a8edea 100%);
   padding: 20px;
 }
 

@@ -231,13 +231,13 @@ function finishRollCall() {
 // 获取出勤人数
 function getPresentCount() {
   if (!attendanceStore.currentRollCallSession) return 0
-  return attendanceStore.currentRollCallSession.students.filter(s => s.status === '已到').length
+  return attendanceStore.currentRollCallSession.students.filter((s: any) => s.status === '已到').length
 }
 
 // 获取缺勤人数
 function getAbsentCount() {
   if (!attendanceStore.currentRollCallSession) return 0
-  return attendanceStore.currentRollCallSession.students.filter(s => s.status === '未到').length
+  return attendanceStore.currentRollCallSession.students.filter((s: any) => s.status === '未到').length
 }
 
 // 获取出勤率
@@ -252,7 +252,7 @@ function getAttendanceRate() {
 <style scoped>
 .roll-call-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff9ff3 0%, #54a0ff 25%, #5f27cd 50%, #00d2d3 75%, #ff9ff3 100%);
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -267,18 +267,19 @@ function getAttendanceRate() {
 }
 
 .start-card {
-  background: white;
+  background: linear-gradient(135deg, #81ecec 0%, #74b9ff 50%, #a29bfe 100%);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   width: 100%;
+  color: white;
 }
 
 .title {
   font-size: 2.5rem;
-  color: #333;
+  color: white;
   margin-bottom: 20px;
   font-weight: bold;
 }
@@ -289,13 +290,13 @@ function getAttendanceRate() {
 
 .class-name {
   font-size: 1.5rem;
-  color: #667eea;
+  color: white;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
 .student-count {
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
 }
 
@@ -328,11 +329,12 @@ function getAttendanceRate() {
 }
 
 .progress-container {
-  background: white;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 50%, #fab1a0 100%);
   border-radius: 15px;
   padding: 20px;
   margin-bottom: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .progress-info {
@@ -340,7 +342,7 @@ function getAttendanceRate() {
   justify-content: space-between;
   margin-bottom: 15px;
   font-weight: bold;
-  color: #333;
+  color: white;
 }
 
 .progress-bar {
@@ -364,13 +366,14 @@ function getAttendanceRate() {
 }
 
 .student-card {
-  background: white;
+  background: linear-gradient(135deg, #55efc4 0%, #81ecec 50%, #74b9ff 100%);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   width: 400px;
   transform-style: preserve-3d;
+  color: white;
 }
 
 .student-avatar {
@@ -392,7 +395,7 @@ function getAttendanceRate() {
 
 .student-name {
   font-size: 2rem;
-  color: #333;
+  color: white;
   margin-bottom: 10px;
   font-weight: bold;
 }

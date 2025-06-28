@@ -26,12 +26,10 @@ const handleClassChange = (classId: string) => {
     <header class="app-header">
       <div class="header-content">
         <div class="logo">
-          <h1>学生点名系统</h1>
         </div>
         <nav class="main-nav">
-          <RouterLink to="/" class="nav-link">首页</RouterLink>
+          <RouterLink to="/" class="nav-link">学生管理</RouterLink>
           <RouterLink to="/class-manage" class="nav-link">班级管理</RouterLink>
-          <RouterLink to="/student-manage" class="nav-link">学生管理</RouterLink>
           <RouterLink to="/roll-call" class="nav-link">全员点名</RouterLink>
           <RouterLink to="/random-call" class="nav-link">随机点名</RouterLink>
           <RouterLink to="/reports" class="nav-link">考勤报告</RouterLink>
@@ -80,7 +78,7 @@ const handleClassChange = (classId: string) => {
 
 <style scoped>
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff7675 0%, #fd79a8 25%, #fdcb6e 50%, #e17055 75%, #74b9ff 100%);
   color: white;
   padding: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

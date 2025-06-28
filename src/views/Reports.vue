@@ -157,7 +157,7 @@ const selectedRecord = ref<AttendanceRecord | null>(null)
 const totalRecords = computed(() => {
   if (!classStore.currentClassId) return 0
   return attendanceStore.attendanceRecords.filter(
-    record => record.classId === classStore.currentClassId
+    (record: any) => record.classId === classStore.currentClassId
   ).length
 })
 
@@ -165,10 +165,10 @@ const totalRecords = computed(() => {
 const averageAttendanceRate = computed(() => {
   if (!classStore.currentClassId) return 0
   const records = attendanceStore.attendanceRecords.filter(
-    record => record.classId === classStore.currentClassId
+    (record: any) => record.classId === classStore.currentClassId
   )
   if (records.length === 0) return 0
-  const totalRate = records.reduce((sum, record) => sum + record.summary.rate, 0)
+  const totalRate = records.reduce((sum: any, record: any) => sum + record.summary.rate, 0)
   return Math.round(totalRate / records.length)
 })
 
@@ -176,10 +176,10 @@ const averageAttendanceRate = computed(() => {
 const latestRecord = computed(() => {
   if (!classStore.currentClassId) return null
   const records = attendanceStore.attendanceRecords.filter(
-    record => record.classId === classStore.currentClassId
+    (record: any) => record.classId === classStore.currentClassId
   )
   if (records.length === 0) return null
-  return records.reduce((latest, record) => 
+  return records.reduce((latest: any, record: any) => 
     new Date(record.date) > new Date(latest.date) ? record : latest
   )
 })
@@ -290,7 +290,7 @@ function exportRecord() {
 <style scoped>
 .reports-page {
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #55efc4 0%, #81ecec 25%, #74b9ff 50%, #a29bfe 75%, #fd79a8 100%);
   min-height: 100vh;
 }
 
@@ -325,7 +325,7 @@ function exportRecord() {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #a29bfe 100%);
   border-radius: 15px;
   padding: 25px;
   display: flex;
@@ -333,6 +333,15 @@ function exportRecord() {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease;
+  color: white;
+}
+
+.stat-card:nth-child(2) {
+  background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e17055 100%);
+}
+
+.stat-card:nth-child(3) {
+  background: linear-gradient(135deg, #55efc4 0%, #81ecec 50%, #74b9ff 100%);
 }
 
 .stat-card:hover {
@@ -347,21 +356,22 @@ function exportRecord() {
 .stat-value {
   font-size: 2rem;
   font-weight: bold;
-  color: #333;
+  color: white;
 }
 
 .stat-label {
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
 }
 
 /* 记录列表 */
 .records-section {
-  background: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
   border-radius: 15px;
   padding: 25px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
+  color: white;
 }
 
 .section-header {
@@ -372,14 +382,14 @@ function exportRecord() {
 }
 
 .section-header h3 {
-  color: #333;
+  color: white;
   margin: 0;
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .empty-icon {
@@ -398,12 +408,14 @@ function exportRecord() {
 }
 
 .record-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: white;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .record-card:hover {
@@ -420,11 +432,11 @@ function exportRecord() {
 
 .record-info h4 {
   margin: 0 0 5px 0;
-  color: #333;
+  color: white;
 }
 
 .record-date {
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
   margin: 0 0 5px 0;
 }

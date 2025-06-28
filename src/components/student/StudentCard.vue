@@ -85,8 +85,34 @@ function getAvatarClass(gender: string): string {
 
 <style scoped>
 .student-card {
-  @apply bg-white rounded-lg shadow-md p-4 transition-all duration-200;
-  @apply hover:shadow-lg border border-gray-200;
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
+  @apply rounded-lg shadow-md p-4 transition-all duration-200;
+  @apply hover:shadow-lg border border-white;
+}
+
+/* 为相邻卡片设置不同颜色 */
+.student-card:nth-child(6n+1) {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #a29bfe 100%);
+}
+
+.student-card:nth-child(6n+2) {
+  background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e17055 100%);
+}
+
+.student-card:nth-child(6n+3) {
+  background: linear-gradient(135deg, #55efc4 0%, #81ecec 50%, #74b9ff 100%);
+}
+
+.student-card:nth-child(6n+4) {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
+}
+
+.student-card:nth-child(6n+5) {
+  background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #fd79a8 100%);
+}
+
+.student-card:nth-child(6n+6) {
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 50%, #74b9ff 100%);
 }
 
 .student-card.deleted {
@@ -124,11 +150,12 @@ function getAvatarClass(gender: string): string {
 }
 
 .student-name {
-  @apply text-lg font-bold text-gray-800 mb-1;
+  @apply text-lg font-bold text-white mb-1;
 }
 
 .student-no {
-  @apply text-sm text-gray-600 mb-2;
+  @apply text-sm text-white mb-2;
+  opacity: 0.9;
 }
 
 .student-gender {

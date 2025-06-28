@@ -1,7 +1,7 @@
 import { ref, computed, readonly } from 'vue'
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import type { AttendanceRecord, AttendanceDetail, RollCallSession, RollCallStudent, RandomCallSession, RandomCallHistory, RandomCallSettings } from '@/types/attendance'
+import type { AttendanceRecord, AttendanceDetail, RollCallSession, RollCallStudent, RandomCallSession, RandomCallSettings, RandomCallHistoryRecord } from '@/types/attendance'
 import { useStudentStore } from './student'
 import { useClassStore } from './class'
 import { AntiRepeatRandomPicker } from '@/utils/random'
@@ -20,7 +20,6 @@ export const useAttendanceStore = defineStore('attendance', () => {
   const randomCallSettings = ref<RandomCallSettings>({
     pickCount: 1,
     excludeSelected: false,
-    animationType: 'roulette',
     enableSound: true
   })
 
@@ -214,7 +213,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
   // 结束随机点名会话
   function endRandomCall() {
     if (currentRandomCallSession.value) {
-      currentRandomCallSession.value.isActive = false
+      currentRandomCallSession.value.isCompleted = true
       currentRandomCallSession.value = null
     }
   }
@@ -237,16 +236,18 @@ export const useAttendanceStore = defineStore('attendance', () => {
 
     const session: RandomCallSession = {
       id: uuidv4(),
-      classId,
+      classId: classId,
       startTime: new Date(),
-      isActive: true,
+      isCompleted: false,
+      selectedStudents: [],
+      excludeSelected: randomCallSettings.value.excludeSelected,
       students: rollCallStudents,
       history: [],
       settings: { ...randomCallSettings.value }
     }
 
     currentRandomCallSession.value = session
-    antiRepeatPicker.reset(rollCallStudents)
+    antiRepeatPicker.reset()
     return session
   }
 
@@ -283,7 +284,7 @@ export const useAttendanceStore = defineStore('attendance', () => {
     const session = currentRandomCallSession.value
     if (!session) return
     
-    const historyRecord: RandomCallHistory = {
+    const historyRecord: RandomCallHistoryRecord = {
       id: uuidv4(),
       time: new Date(),
       selectedStudents

@@ -35,3 +35,27 @@ export interface RollCallStudent {
   status?: '已到' | '未到'
   time?: Date
 }
+
+export interface RandomCallSettings {
+  pickCount: number
+  excludeSelected: boolean
+  enableSound: boolean
+}
+
+export interface RandomCallHistoryRecord {
+  id: string
+  time: Date
+  selectedStudents: RollCallStudent[]
+}
+
+export interface RandomCallSession {
+  id: string
+  classId: string
+  startTime: Date
+  settings: RandomCallSettings
+  isCompleted: boolean
+  selectedStudents: RollCallStudent[]
+  history: RandomCallHistoryRecord[]
+  excludeSelected: boolean
+  students: RollCallStudent[]
+}

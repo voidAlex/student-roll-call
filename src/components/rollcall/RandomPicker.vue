@@ -341,7 +341,7 @@ onMounted(() => {
 }
 
 .selected-student {
-  background: white;
+  background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3);
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -366,12 +366,13 @@ onMounted(() => {
 .student-name {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #333;
+  color: white;
   margin-bottom: 0.5rem;
 }
 
 .student-no {
-  color: #666;
+  color: white;
+  opacity: 0.9;
   font-size: 1rem;
 }
 

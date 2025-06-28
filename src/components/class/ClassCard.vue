@@ -114,7 +114,7 @@ const handleDelete = () => {
 <style scoped>
 .class-card {
   position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #a29bfe 100%);
   border-radius: 12px;
   padding: 20px;
   color: white;
@@ -142,21 +142,21 @@ const handleDelete = () => {
   box-shadow: 0 8px 24px rgba(17, 153, 142, 0.3);
 }
 
-/* 渐变色方案 */
+/* 多巴胺渐变色方案 */
 .class-card:nth-child(4n+1) {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #a29bfe 100%);
 }
 
 .class-card:nth-child(4n+2) {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 50%, #e17055 100%);
 }
 
 .class-card:nth-child(4n+3) {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #55efc4 0%, #81ecec 50%, #74b9ff 100%);
 }
 
 .class-card:nth-child(4n+4) {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #fd79a8 100%);
 }
 
 .class-info {
