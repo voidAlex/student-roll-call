@@ -74,9 +74,9 @@ jobs:
       uses: tauri-apps/tauri-action@v0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-        TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-
+        # 移除以下两行
+        # TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+        # TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
       with:
         tagName: ${{ github.ref_name }}
         releaseName: 'Student Roll Call v__VERSION__'
