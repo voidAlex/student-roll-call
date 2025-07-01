@@ -50,6 +50,9 @@
       "frameworks": [],
       "minimumSystemVersion": "",
       "exceptionDomain": "",
+      "signingIdentity": "-",
+      "hardenedRuntime": false,
+      "entitlements": null,
       "dmg": {
         "appPosition": {
           "x": 180,
